@@ -1,0 +1,15 @@
+@startuml MSPGeneral
+start
+:StopWatchDog();
+:ConfigClock();
+:ConfigUART();
+:ConfigTimerA();
+:ConfigADC();
+:Set and Init UART communication();
+while (not FlagStop) is (true)
+    :ReadSensor(20ms TimerA);
+    :SendUART;
+endwhile
+:Stop communication;
+stop
+@enduml
