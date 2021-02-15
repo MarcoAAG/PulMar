@@ -1,0 +1,42 @@
+% **************************************************
+% Document Class Definition
+% **************************************************
+%\documentclass[a4paper]{article}  %Formato de plantilla que vamos a utilizar
+\documentclass[%
+    paper=A4,               % paper size --> A4 is default in Germany
+    %twoside=true,           % onesite or twoside printing
+    openright,              % doublepage cleaning ends up right side
+    parskip=half,           % spacing value / method for paragraphs
+    chapterprefix=true,     % prefix for chapter marks
+    12pt,                   % font size
+    headings=normal,        % size of headings
+    bibliography=totoc,     % include bib in toc
+    listof=totoc,           % include listof entries in toc
+    titlepage=on,           % own page for each title page
+    captions=tableabove,    % display table captions above the float env
+    chapterprefix=false,    % do not display a prefix for chapters
+    appendixprefix=false,    % but display a prefix for appendix chapter
+    draft=false,            % value for draft version
+]{scrreprt}%
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[margin=2cm, top=2cm, includefoot]{geometry}
+\usepackage{graphics} %Para insercion de imagenes
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+
+
+%Declaracaion de variables
+\newcommand{\currentDate}{\today}
+
+%Comienzo de documento
+\begin{document}
+  \input{Contents/Title/Title}
+  \clearpage
+  \tableofcontents
+  \clearpage
+  \input{Contents/Introduction/Introduction}
+
+\end{document}
