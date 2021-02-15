@@ -1,0 +1,25 @@
+@startuml UART-COM
+
+title UART Protocol
+
+entity HOST
+entity MSP
+
+autonumber "<b>[000]"
+
+MSP->MSP: Waiting for character
+HOST->MSP: Send "@"
+activate MSP
+MSP->MSP: Character validation
+MSP->x] : If not "@" Go to [001]
+return Send answer
+HOST -> HOST: String Validation
+[x<-HOST:If "NOK" go to [002]
+loop each T times
+    MSP -> HOST: Sensor Data
+end
+...
+HOST -> MSP: Send "STOP"
+== Finish Communication ==
+
+@enduml
