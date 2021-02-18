@@ -1,11 +1,10 @@
 #include <msp430g2553.h>
 #include <stdint.h>
 
-
-#define SENSOR	BIT0
-#define RX	BIT1
+#define SENSOR BIT0
+#define RX BIT1
 #define TX BIT2
-
+#define LED BIT6
 
 /* ********** FUNCTION'S PROTOTYPE ********** */
 
@@ -25,13 +24,40 @@ void clockInit(void);
 	* Input = int 16bits
 	* Output = void
 */
-void timerAInit(uint16_t delay);
+void timerAInit(uint32_t delay);
+
+void configIO(void);
+
+int flag = 0;
 
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
+	clockInit();
+	timerAInit(250000);
+	configIO();
+
+	/* enable interrupts */
+	_BIS_SR(GIE);
+	while (1)
+	{
+		/* code */
+	}
 
 	return 0;
+}
+
+/* Interrupt service */
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void Timer_A (void)
+{
+    flag++;
+    if(flag==2)
+    {
+        P1OUT ^= LED;
+        flag = 0;
+    }
+
 }
 
 /* ********** FUNCTION'S BODY ********** */
@@ -65,10 +91,10 @@ void uartInit(void)
 }
 void clockInit(void)
 {
-	BCSCTL1 = CAL_BC1_1MHZ; /* Basic clock system control 1 */
+	BCSCTL1 = CALBC1_1MHZ; /* Basic clock system control 1 */
 	DCOCTL = CALDCO_1MHZ;	/* control register */
 }
-void timerAInit(uint16_t delay)
+void timerAInit(uint32_t delay)
 {
 	double period = 7.27; /* period in us*/
 	uint16_t timer_ratio = (uint16_t)(delay / period);
@@ -77,7 +103,15 @@ void timerAInit(uint16_t delay)
 											 /* ID_3 -> Source clock divided by 8 */
 											 /* MC_1 -> Up mode */
 											 /* TACLR -> timer clear */
-	TACCR0 = timer_ratio - 1;				 /* count of Timer_A */
+	TACCR0 = timer_ratio - 1;						 /* count of Timer_A */
 	CCTL0 = CCIE;							 /* Capture/compare interrupt enable. */
-
 }
+
+void configIO(void)
+{
+	P1OUT = 0;
+	P1SEL = 0;
+	P1SEL2 = 0;
+	P1DIR = LED;
+}
+
