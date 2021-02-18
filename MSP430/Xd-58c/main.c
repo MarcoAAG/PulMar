@@ -30,10 +30,15 @@ void configIO(void);
 
 void sendC(unsigned char c);
 
-int flag = 0;
+void sendS(unsigned char *str);
+
+int flag_timer = 0;
 
 int main(void)
 {
+
+	unsigned char *send_data = "b\n";
+
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
 	clockInit();
 	timerAInit(30000);
@@ -45,6 +50,11 @@ int main(void)
 	while (1)
 	{
 		/* code */
+		if (flag_timer)
+		{
+			sendS(send_data);
+			flag_timer = 0;
+		}
 	}
 
 	return 0;
@@ -54,12 +64,8 @@ int main(void)
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void Timer_A(void)
 {
-	flag++;
-	if (flag == 2)
-	{
-		P1OUT ^= LED;
-		flag = 0;
-	}
+	P1OUT ^= LED;
+	flag_timer = 1;
 }
 
 /* ********** FUNCTION'S BODY ********** */
@@ -125,4 +131,13 @@ void sendC(unsigned char c)
 	while (!(IFG2 & UCA0TXIFG))
 		;
 	UCA0TXBUF = c;
+}
+
+void sendS(unsigned char *str)
+{
+	while (*str)
+	{
+		sendC(*str);
+		str++;
+	}
 }
