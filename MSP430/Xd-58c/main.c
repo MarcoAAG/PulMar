@@ -28,13 +28,16 @@ void timerAInit(uint32_t delay);
 
 void configIO(void);
 
+void sendC(unsigned char c);
+
 int flag = 0;
 
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
 	clockInit();
-	timerAInit(250000);
+	timerAInit(30000);
+	uartInit();
 	configIO();
 
 	/* enable interrupts */
@@ -48,16 +51,15 @@ int main(void)
 }
 
 /* Interrupt service */
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void Timer_A (void)
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer_A(void)
 {
-    flag++;
-    if(flag==2)
-    {
-        P1OUT ^= LED;
-        flag = 0;
-    }
-
+	flag++;
+	if (flag == 2)
+	{
+		P1OUT ^= LED;
+		flag = 0;
+	}
 }
 
 /* ********** FUNCTION'S BODY ********** */
@@ -92,7 +94,7 @@ void uartInit(void)
 void clockInit(void)
 {
 	BCSCTL1 = CALBC1_1MHZ; /* Basic clock system control 1 */
-	DCOCTL = CALDCO_1MHZ;	/* control register */
+	DCOCTL = CALDCO_1MHZ;  /* control register */
 }
 void timerAInit(uint32_t delay)
 {
@@ -103,7 +105,7 @@ void timerAInit(uint32_t delay)
 											 /* ID_3 -> Source clock divided by 8 */
 											 /* MC_1 -> Up mode */
 											 /* TACLR -> timer clear */
-	TACCR0 = timer_ratio - 1;						 /* count of Timer_A */
+	TACCR0 = timer_ratio - 1;				 /* count of Timer_A */
 	CCTL0 = CCIE;							 /* Capture/compare interrupt enable. */
 }
 
@@ -113,5 +115,14 @@ void configIO(void)
 	P1SEL = 0;
 	P1SEL2 = 0;
 	P1DIR = LED;
+	/* Setting the UART ports */
+	P1SEL |= RX | TX;
+	P1SEL2 |= RX | TX;
 }
 
+void sendC(unsigned char c)
+{
+	while (!(IFG2 & UCA0TXIFG))
+		;
+	UCA0TXBUF = c;
+}
