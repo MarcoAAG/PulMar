@@ -21,7 +21,7 @@
 *   @fn timerAInit(void)
 *   @brief Clock Driver
 *
-*   This function set clock register at selected value.
+*   This function set timer register.
 * 
 */
 void timerAInit(uint32_t delay)

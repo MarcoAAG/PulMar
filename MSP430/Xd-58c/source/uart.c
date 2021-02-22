@@ -10,8 +10,8 @@
 */
 
 #include <msp430g2553.h>
+#include <stdint.h>
 #include "uart.h"
-
 
 /* SourceId : UART_SourceId_001 */
 /* DesignId : UART_DesignId_001 */
@@ -31,7 +31,6 @@
 void uartInit(uart_reg *uart)
 {
 
-
     /* #1 */
     UCA0CTL1 = UCSWRST;
 
@@ -48,4 +47,50 @@ void uartInit(uart_reg *uart)
 
     /* #5 */
     IE2 |= UCA0RXIE;
+}
+
+/* SourceId : UART_SourceId_002 */
+/* DesignId : UART_DesignId_002 */
+/*
+*   @fn void uartPorts(int tx_bit, int rx_bit)
+*   @brief Set TX and RX port bits
+*
+*   This function set the UART port.
+*/
+void uartPorts(int tx_bit, int rx_bit)
+{
+    P1SEL |= tx_bit | rx_bit;
+    P1SEL2 |= tx_bit | rx_bit;
+}
+
+/* SourceId : UART_SourceId_003 */
+/* DesignId : UART_DesignId_003 */
+/*
+*   @fn void sendCharacter(uint8_t c)
+*   @brief send character
+*
+*   This function sendCharacter.
+*/
+void sendCharacter(uint8_t c)
+{
+    while (!(IFG2 & UCA0TXIFG))
+        ;
+    UCA0TXBUF = c;
+}
+
+/* SourceId : UART_SourceId_004 */
+/* DesignId : UART_DesignId_004 */
+/*
+*   @fn void sendString(uint8_t str)
+*   @brief send string
+*
+*/
+void sendString(uint8_t *str)
+{
+    while (*str)
+    {
+        sendCharacter(*str);
+        str++;
+
+    }
 }

@@ -19,5 +19,4 @@
 /* timer Function */
 void timerAInit(uint32_t delay);
 
-
 #endif

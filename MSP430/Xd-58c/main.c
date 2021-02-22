@@ -3,6 +3,7 @@
 #include "uart.h"
 #include "clock.h"
 #include "timer.h"
+#include "adc.h"
 
 
 int flag_timer = 0;
@@ -10,9 +11,11 @@ int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
 
-	P1DIR |= BIT6;
-	P1SEL =0;
+	P1OUT = 0;
+	P1SEL = 0;
 	P1SEL2 = 0;
+
+	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
 
 	/* Create uart config struct */
@@ -26,20 +29,18 @@ int main(void)
 	clockInit(set_1Mhz);
 	timerAInit((uint32_t)250000);
 	uartInit(&my_port);
+	uartPorts(BIT2, BIT1);
 
 	/* enable interrupts */
 	_BIS_SR(GIE);
-	while (1);
-	
-	// while (1)
-	// {
-	// 	/* code */
-	// 	if (flag_timer)
-	// 	{
-	// 		sendS(send_data);
-	// 		flag_timer = 0;
-	// 	}
-	// }
+	while (1)
+	{
+		if(flag_timer)
+		{
+			sendString("A\n");
+			flag_timer = 0;
+		}
+	}
 
 	return 0;
 }
@@ -48,38 +49,5 @@ int main(void)
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void Timer_A(void)
 {
-	flag_timer++;
-	if (flag_timer == 2)
-	{
-		P1OUT ^= BIT6;
-		flag_timer = 0;
-	}
+	flag_timer = 1;
 }
-
-
-// void configIO(void)
-// {
-// 	P1OUT = 0;
-// 	P1SEL = 0;
-// 	P1SEL2 = 0;
-// 	P1DIR = LED;
-// 	/* Setting the UART ports */
-// 	P1SEL |= RX | TX;
-// 	P1SEL2 |= RX | TX;
-// }
-
-// void sendC(unsigned char c)
-// {
-// 	while (!(IFG2 & UCA0TXIFG))
-// 		;
-// 	UCA0TXBUF = c;
-// }
-
-// void sendS(unsigned char *str)
-// {
-// 	while (*str)
-// 	{
-// 		sendC(*str);
-// 		str++;
-// 	}
-// }

@@ -6,7 +6,7 @@
  *
  */
 
- /*
+/*
  *  Created on: Feb 18, 2021
  *      Author: marco
  */
@@ -50,7 +50,6 @@ enum regOptions
     TWO_STOP_BIT = 0X08,
 };
 
-
 typedef struct uart_settings
 {
     uint8_t parity_enable;
@@ -59,19 +58,16 @@ typedef struct uart_settings
     uint8_t length_data;
     uint8_t stop_bit;
     uint8_t clk_source;
-}uart_reg;
+} uart_reg;
 
 /* Define port bit*/
 #define RX 0x01;
-#define TX 0x02; 
+#define TX 0x02;
 
 /* UART Interface Functions */
 void uartInit(uart_reg *uart);
-void sendCharacter(uint8_t);
-void sendString(uint8_t);
-
-
-
-
+void uartPorts(int tx_bit, int rx_bit);
+void sendCharacter(uint8_t c);
+void sendString(uint8_t *str);
 
 #endif /* UART_H_ */
