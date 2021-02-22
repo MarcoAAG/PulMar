@@ -47,6 +47,7 @@ int main(void)
 	my_port.stop_bit = ONE_STOP_BIT;
 
 	uartInit(&my_port);
+	BCSCTL1 = CALBC1_1MHZ;
 
 
 	// /* enable interrupts */

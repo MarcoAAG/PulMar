@@ -20,16 +20,17 @@
 *   @brief Initializes the SCI Driver
 *
 *   This function initializes the SCI module.
-*/
-void uartInit(uart_reg *uart)
-{
-    /* 
+* 
+*   Steps to initializes and set UART module
         *1. Set UCSWRST (BIS.B #UCSWRST,&UCAxCTL1)
         *2. Initialize all USCI registers with UCSWRST = 1 (including UCAxCTL1) 
         *3. Configure ports.
         *4. Clear UCSWRST via software (BIC.B #UCSWRST,&UCAxCTL1) 
         *5. Enable interrupts (optional) via UCAxRXIE and/or UCAxTXIE 
-    */
+*/
+void uartInit(uart_reg *uart)
+{
+
 
     /* #1 */
     UCA0CTL1 = UCSWRST;
