@@ -16,7 +16,6 @@
 
 #pragma once
 
-
 /*
 *   @enum setOptions
 *   @brief set frecuancy values Definitions
@@ -49,6 +48,10 @@ enum clockReg
     BC1_1MHZ = 0x10FF,
 
 };
+
+/* address memory variables */
+extern unsigned char *DCO_ADDRESS;
+extern unsigned char *BCS1_ADDRESS;
 
 /* clock Function */
 void clockInit(unsigned char dco_reg);

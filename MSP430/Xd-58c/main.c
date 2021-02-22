@@ -1,6 +1,7 @@
 #include <msp430g2553.h>
 #include <stdint.h>
 #include "uart.h"
+#include "clock.h"
 
 // #define SENSOR BIT0
 // #define RX BIT1
@@ -39,6 +40,7 @@ int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
 
+	/* Create uart config struct */
 	uart_reg my_port;
 	my_port.clk_source = SMCLK;
 	my_port.parity_enable = PARITY_DISABLE;
@@ -46,9 +48,8 @@ int main(void)
 	my_port.length_data = DATA_8_BIT;
 	my_port.stop_bit = ONE_STOP_BIT;
 
+	clockInit(set_1Mhz);
 	uartInit(&my_port);
-	BCSCTL1 = CALBC1_1MHZ;
-
 
 	// /* enable interrupts */
 	// _BIS_SR(GIE);
