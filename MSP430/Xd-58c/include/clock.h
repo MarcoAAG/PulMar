@@ -38,14 +38,14 @@ enum setClock
 */
 enum clockReg
 {
-    DCO_16MHZ = 0x10F8,
-    BC1_16MHZ = 0x10F9,
-    DCO_12MHZ = 0x10FA,
-    BC1_12MHZ = 0x10FB,
-    DCO_8MHZ = 0x10FC,
-    BC1_8MHZ = 0x10FD,
-    DCO_1MHZ = 0x10FE,
-    BC1_1MHZ = 0x10FF,
+    DCO_16MHZ = 0xF8,
+    BC1_16MHZ = 0xF9,
+    DCO_12MHZ = 0xFA,
+    BC1_12MHZ = 0xFB,
+    DCO_8MHZ = 0xFC,
+    BC1_8MHZ = 0xFD,
+    DCO_1MHZ = 0x80,
+    BC1_1MHZ = 0x87,
 
 };
 

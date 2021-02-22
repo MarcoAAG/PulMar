@@ -26,7 +26,6 @@ unsigned char *BCS1_ADDRESS = (unsigned char *)0x0057;
 *   This function set clock register at selected value.
 * 
 */
-
 void clockInit(unsigned char dco_reg)
 {
     switch (dco_reg)
@@ -53,5 +52,5 @@ void clockInit(unsigned char dco_reg)
         *BCS1_ADDRESS = (unsigned char)BC1_1MHZ;
         break;
     }
-    
+
 }

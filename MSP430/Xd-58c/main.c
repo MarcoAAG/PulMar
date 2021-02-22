@@ -2,43 +2,18 @@
 #include <stdint.h>
 #include "uart.h"
 #include "clock.h"
+#include "timer.h"
 
-// #define SENSOR BIT0
-// #define RX BIT1
-// #define TX BIT2
-// #define LED BIT6
 
-// /* ********** FUNCTION'S PROTOTYPE ********** */
-
-// /*
-// 	* Input = void
-// 	* Output = void
-// */
-// void uartInit(void);
-
-// /*
-// 	* Input = void
-// 	* Output = void
-// */
-// void clockInit(void);
-
-// /*
-// 	* Input = int 16bits
-// 	* Output = void
-// */
-// void timerAInit(uint32_t delay);
-
-// void configIO(void);
-
-// void sendC(unsigned char c);
-
-// void sendS(unsigned char *str);
-
-// int flag_timer = 0;
-
+int flag_timer = 0;
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
+
+	P1DIR |= BIT6;
+	P1SEL =0;
+	P1SEL2 = 0;
+	P1OUT &= ~BIT6;
 
 	/* Create uart config struct */
 	uart_reg my_port;
@@ -49,10 +24,13 @@ int main(void)
 	my_port.stop_bit = ONE_STOP_BIT;
 
 	clockInit(set_1Mhz);
+	timerAInit((uint32_t)250000);
 	uartInit(&my_port);
 
-	// /* enable interrupts */
-	// _BIS_SR(GIE);
+	/* enable interrupts */
+	_BIS_SR(GIE);
+	while (1);
+	
 	// while (1)
 	// {
 	// 	/* code */
@@ -66,60 +44,18 @@ int main(void)
 	return 0;
 }
 
-// /* Interrupt service */
-// #pragma vector = TIMER0_A0_VECTOR
-// __interrupt void Timer_A(void)
-// {
-// 	P1OUT ^= LED;
-// 	flag_timer = 1;
-// }
+/* Interrupt service */
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer_A(void)
+{
+	flag_timer++;
+	if (flag_timer == 2)
+	{
+		P1OUT ^= BIT6;
+		flag_timer = 0;
+	}
+}
 
-// /* ********** FUNCTION'S BODY ********** */
-// void uartInit(void)
-// {
-// 	/* 1. Set UCSWRST (BIS.B #UCSWRST,&UCAxCTL1) */
-// 	/* 2. Initialize all USCI registers with UCSWRST = 1 (including UCAxCTL1) */
-// 	/* 3. Configure ports.*/
-// 	/* 4. Clear UCSWRST via software (BIC.B #UCSWRST,&UCAxCTL1) */
-// 	/* 5. Enable interrupts (optional) via UCAxRXIE and/or UCAxTXIE */
-
-// 	/* #1 */
-// 	UCA0CTL1 = UCSWRST;
-
-// 	/* #2 */
-// 	UCA0CTL1 |= UCSSEL_2; /* Set SMCLK */
-// 	UCA0CTL0 = 0;		  /* Parity Disable */
-// 						  /* Odd parity */
-// 						  /* LSB first */
-// 						  /* 8bits */
-// 						  /* One Stop bit */
-// 						  /* USCI Mode (UART) */
-// 						  /* Asynchronous Mode */
-// 	UCA0BR0 = 104;		  /* Baud Rate (Getting from Family User's Guide) */
-
-// 	/* #4 */
-// 	UCA0CTL1 &= ~UCSWRST;
-
-// 	/* #5 */
-// 	IE2 |= UCA0RXIE; /* Receive interrup enable */
-// }
-// void clockInit(void)
-// {
-// 	BCSCTL1 = CALBC1_1MHZ; /* Basic clock system control 1 */
-// 	DCOCTL = CALDCO_1MHZ;  /* control register */
-// }
-// void timerAInit(uint32_t delay)
-// {
-// 	double period = 7.27; /* period in us*/
-// 	uint16_t timer_ratio = (uint16_t)(delay / period);
-
-// 	TA0CTL = TASSEL_2 | ID_3 | MC_1 | TACLR; /* TASSEL_2 -> SMCLK */
-// 											 /* ID_3 -> Source clock divided by 8 */
-// 											 /* MC_1 -> Up mode */
-// 											 /* TACLR -> timer clear */
-// 	TACCR0 = timer_ratio - 1;				 /* count of Timer_A */
-// 	CCTL0 = CCIE;							 /* Capture/compare interrupt enable. */
-// }
 
 // void configIO(void)
 // {
