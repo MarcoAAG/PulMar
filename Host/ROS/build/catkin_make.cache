@@ -1,0 +1,2 @@
+pulse-plot
+-DCATKIN_DEVEL_PREFIX=/home/marco/Documents/EmbeddedSW/PulMar/Host/ROS/devel -DCMAKE_INSTALL_PREFIX=/home/marco/Documents/EmbeddedSW/PulMar/Host/ROS/install -G Unix Makefiles

@@ -1,0 +1,8 @@
+prefix=/home/marco/Documents/EmbeddedSW/PulMar/Host/ROS/devel
+
+Name: pulse-plot
+Description: Description of pulse-plot
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

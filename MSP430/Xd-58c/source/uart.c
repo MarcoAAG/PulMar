@@ -41,7 +41,10 @@ void uartInit(uart_reg *uart)
     /* #3 */
     UCA0CTL0 = 0;
     UCA0CTL0 |= uart->parity_enable | uart->parity | uart->msb_or_lsb | uart->length_data | uart->stop_bit;
-
+    // UCA0CTL0 = 0;
+    UCA0BR0 = 104;      /*  104 From datasheet table- */
+    UCA0BR1 = 0;        /* -selects baudrate =9600,clk = SMCLK*/
+    UCA0MCTL = UCBRS_6; /* Modulation value = 6 from datasheet*/
     /* $4 */
     UCA0CTL1 &= ~UCSWRST;
 
@@ -91,6 +94,59 @@ void sendString(uint8_t *str)
     {
         sendCharacter(*str);
         str++;
-
     }
+}
+
+
+void sciSendData(uint8_t *text, uint32_t length)
+{
+    uint8_t txt = 0;
+    uint8_t txt1 = 0;
+
+#if ((__little_endian__ == 1) || (__LITTLE_ENDIAN__ == 1))
+    text = text + (length - 1);
+#endif
+
+    while (length--)
+    {
+#if ((__little_endian__ == 1) || (__LITTLE_ENDIAN__ == 1))
+        txt = *text--;
+#else
+        txt = *text++;
+#endif
+
+        txt1 = txt;
+
+        txt &= ~(0xF0);
+        txt1 &= ~(0x0F);
+        txt1 = txt1 >> 4;
+
+        if (txt <= 0x9)
+        {
+            txt += 0x30;
+        }
+        else if (txt > 0x9 && txt <= 0xF)
+        {
+            txt += 0x37;
+        }
+        else
+        {
+            txt = 0x30;
+        }
+
+        if (txt1 <= 0x9)
+        {
+            txt1 += 0x30;
+        }
+        else if ((txt1 > 0x9) && (txt1 <= 0xF))
+        {
+            txt1 += 0x37;
+        }
+        else
+        {
+            txt1 = 0x30;
+        }
+        sendCharacter(txt1);
+        sendCharacter(txt);
+    };
 }

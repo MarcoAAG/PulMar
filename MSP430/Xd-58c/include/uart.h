@@ -38,15 +38,15 @@ enum clockSource
 */
 enum regOptions
 {
-    PARITY_DISABLE = 0X00,
+    PARITY_DISABLE = 0,
     PARITY_ENABLE = 0X80,
-    ODD_PARITY = 0X00,
+    ODD_PARITY = 0,
     EVEN_PARITY = 0X40,
-    LSB_FIRST = 0X00,
+    LSB_FIRST = 0,
     MSB_FIRST = 0X20,
-    DATA_8_BIT = 0X00,
+    DATA_8_BIT = 0,
     DATA_7_BIT = 0X10,
-    ONE_STOP_BIT = 0X00,
+    ONE_STOP_BIT = 0,
     TWO_STOP_BIT = 0X08,
 };
 
@@ -69,5 +69,6 @@ void uartInit(uart_reg *uart);
 void uartPorts(int tx_bit, int rx_bit);
 void sendCharacter(uint8_t c);
 void sendString(uint8_t *str);
+void sciSendData(uint8_t *text, uint32_t length);
 
 #endif /* UART_H_ */
